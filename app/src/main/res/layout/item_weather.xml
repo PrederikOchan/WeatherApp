@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/itemIcWeather"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginVertical="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/itemTxtDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        tools:text="Today"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toEndOf="@id/itemIcWeather"
+        app:layout_constraintTop_toTopOf="@id/itemIcWeather"
+        app:layout_constraintBottom_toBottomOf="@id/itemIcWeather"/>
+
+    <TextView
+        android:id="@+id/itemTxtTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="30°C/24°C"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/itemTxtDay"
+        app:layout_constraintBottom_toBottomOf="@id/itemTxtDay"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
