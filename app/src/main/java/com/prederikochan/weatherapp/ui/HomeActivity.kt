@@ -2,12 +2,18 @@ package com.prederikochan.weatherapp.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -107,19 +113,49 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun dataUnavailable() {
-
+        stopShimmer()
+        layoutDataAvailable.visibility = View.GONE
+        layoutDataUnavailable.visibility = View.VISIBLE
     }
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
-        fusedLocationClient.lastLocation.addOnSuccessListener {
-            it?.let {
-                viewModel.getWeatherData(it.latitude.toString(), it.longitude.toString())
-            } ?: kotlin.run {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-                swipeRefresh.isRefreshing = false
+        if (isGpsActive()) {
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                it?.let {
+                    viewModel.getWeatherData(it.latitude.toString(), it.longitude.toString())
+                } ?: kotlin.run {
+                    Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show()
+                    swipeRefresh.isRefreshing = false
+                    dataUnavailable()
+                }
             }
+        } else {
+            showAlertDialog()
         }
+    }
+
+    private fun showAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage("It seem your gps is turned off")
+                .setCancelable(false)
+                .setPositiveButton("Go to setting") { dialog, id ->
+                    dialog.dismiss()
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+                }
+                .setNegativeButton("Cancel") { dialog, id ->
+                    dataUnavailable()
+                    dialog.cancel()
+                }
+        val alert = dialogBuilder.create()
+        alert.setTitle("Information")
+        alert.show()
+    }
+
+    private fun isGpsActive(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     override fun onResume() {
