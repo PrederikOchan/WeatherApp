@@ -28,7 +28,7 @@ class HomeListAdapter(val context: Context) : RecyclerView.Adapter<HomeListAdapt
     }
 
     override fun getItemCount(): Int {
-        return 3
+        return 6
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
